@@ -42,7 +42,6 @@ def compute_saliency_maps(X, y, model):
 
     saliency = torch.max(torch.abs(X.grad), dim=1).values
 
-
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ##############################################################################
     #                             END OF YOUR CODE                               #
