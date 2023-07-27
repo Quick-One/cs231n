@@ -38,7 +38,13 @@ class PositionalEncoding(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        i_mask = torch.arange(max_len).reshape(max_len, 1)
+        j_mask = torch.arange(embed_dim).reshape(1, embed_dim)
+        j_mask[:, 1:2] -= 1
+        j_mask = 10000 ** (-j_mask / embed_dim)
+        pe[:, :, :] = i_mask * j_mask
+        pe[:, :, 0::2] = torch.sin(pe[:, :, 0::2])
+        pe[:, :, 1::2] = torch.cos(pe[:, :, 1::2])
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
@@ -70,7 +76,8 @@ class PositionalEncoding(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        output = x + self.pe[:, :S, :]
+        output = self.dropout(output)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
