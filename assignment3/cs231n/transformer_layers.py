@@ -165,7 +165,37 @@ class MultiHeadAttention(nn.Module):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        '''
+        (S,E) * (E, T) = (S, T)
+        apply softmax along dim 1 (T)
+        
+        shhape (S, T)
+        
+        mutiplt (S, T) * (T, E) = (S, E)
+        '''
+
+        query = self.query(query)
+        key = self.key(key)
+        value = self.value(value)
+
+        query = query.reshape(N, S, self.n_head, self.head_dim)
+        key = key.reshape(N, T, self.n_head, self.head_dim)
+        value = value.reshape(N, T, self.n_head, self.head_dim)
+
+        query = query.permute(0, 2, 1, 3)
+        key = key.permute(0, 2, 3, 1)
+        value = value.permute(0, 2, 1, 3)
+
+        attn = torch.matmul(query, key) / math.sqrt(self.head_dim)
+        if attn_mask is not None:
+            attn = attn.masked_fill(attn_mask == 0, float('-inf'))
+        attn = F.softmax(attn, dim=-1)
+        attn = self.attn_drop(attn)
+
+        output = torch.matmul(attn, value)
+        output = output.permute(0, 2, 1, 3)
+        output = output.reshape(N, S, E)
+        output = self.proj(output)
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
