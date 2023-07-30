@@ -176,9 +176,9 @@ class MultiHeadAttention(nn.Module):
         (S,E) * (E, T) = (S, T)
         apply softmax along dim 1 (T)
         
-        shhape (S, T)
+        shape (S, T)
         
-        mutiplt (S, T) * (T, E) = (S, E)
+        multiply (S, T) * (T, E) = (S, E)
         '''
 
         query = self.query(query)
